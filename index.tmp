@@ -5,7 +5,7 @@ const {artifacts} = require('./artifacts.json')
 const {emojis} = require('./emojis.json')
 const Paginate = require('./paginate')
 const p = '!'
-const t = 'ODYzMDA5NjY1MzA2OTg0NDQ4.G9wH_d.HVDUAmUZTpAo4pUeAt6FEIvu9XjBsaRKBmYt7U'
+const t = ''
 const getCmdFromArgs = (arg, index, arr) => index != 0
 const c = emojis.controlling
 
