@@ -1,0 +1,157 @@
+const {Client, MessageEmbed} = require('discord.js')
+const client = new Client
+const {heroes, items} = require('./builds.json')
+const {artifacts} = require('./artifacts.json')
+const {emojis} = require('./emojis.json')
+const Paginate = require('./paginate')
+const p = '!'
+const t = 'ODYzMDA5NjY1MzA2OTg0NDQ4.G9wH_d.HVDUAmUZTpAo4pUeAt6FEIvu9XjBsaRKBmYt7U'
+const getCmdFromArgs = (arg, index, arr) => index != 0
+const c = emojis.controlling
+
+//-----------------EMOJIS/ICONS-----------------
+const e = {
+    dark: emojis.dark,
+    light: emojis.light,
+    ice: emojis.ice,
+    wind: emojis.earth,
+    fire: emojis.fire,
+    
+    assassin: emojis.assassin,
+    ranger: emojis.ranger,
+    manauser: emojis.soul,
+    knight: emojis.knight,
+    warrior: emojis.warrior,
+    mage: emojis.mage
+}
+
+const _e = {
+    weapon: emojis.weapon,
+    helmet: emojis.helmet,
+    armor: emojis.armor,
+    boots: emojis.boots,
+    ring: emojis.ring,
+    necklace: emojis.necklace,
+    gsheet: emojis.gsheet,
+    arti: emojis.arti
+}
+
+
+//-----------------UTILS-----------------
+const toe = (attr) =>{
+    return e[attr]
+}
+
+const toColor = (attr) => {
+    return attr == 'dark' ? 'PURPLE' : attr == 'light' ? 'YELLOW' : attr == 'fire' ? 'RED' : attr == 'ice' ? '#4287f5' : attr == 'wind' ? 'GREEN' : null
+}
+
+const toStars = (rarity) => {
+    return emojis.star.repeat(rarity)
+}
+
+const getArtifact = (name) => {
+    return artifacts.find(art => art.name == name)
+}
+
+const tooShort = (len, message) => {
+    if(len < 1) return message.channel.send('No character found with that name! Make sure you typed it correctly!')
+}
+
+const tooLong = (len, message) => {
+    if(len > 10) return message.channel.send(`Too many characters (${len}) found with that name!`)
+}
+
+const checkLength = (len, message) => {
+    tooShort(len, message)
+    tooLong(len, message)
+}
+
+const hFilter = (query) => {
+    return heroes.filter(_h => _h.name.toLowerCase().includes(query.toLowerCase()))
+}
+
+
+//-----------------EMBEDS-----------------
+const getHeroUpper = (embed, h, up) => {
+    embed.setTitle(h.name)
+    .setAuthor(up)
+    .setThumbnail(h.icon)
+    .setDescription(`${toStars(h.rarity)}\n${toe(h.attribute)}/${toe(h.role)}`)
+}
+
+const _setFooter = (client, embed) => {
+    return embed.setFooter(`Kawerik | made with <3 by Haiko#0069`, client.user.displayAvatarURL())
+}
+
+const generalEmbed = (h) => {
+    let general = new MessageEmbed()
+    getHeroUpper(general, h, `Character Sheet`)
+    general
+    .setColor(toColor(h.attribute))
+    .setDescription(`${toStars(h.rarity)}\n${toe(h.attribute)}/${toe(h.role)}\n__**General stats:**__\n**CP: ${h.cp}**\n\n•Attack: ${h.atk}\n•Health: ${h.hp}\n•Defense: ${h.def}\n•Speed: ${h.spd}\n•Critical Chance: ${h.cr > 100 ? 100 : h.cr}%\n•Critical Damage: ${h.cd}%\n•Effectiveness: ${h.eff}%\n•Effect resistance: ${h.res}%\n\nArtifact:**${h.artifactName?h.artifactName:"No artifact equipped"}** (+${h.artifactLevel?h.artifactLevel:0})`)
+    _setFooter(client, general)
+    return general
+}
+
+const artiEmbed = (h) => {
+    let art = getArtifact(h.artifactName)
+    if(!art) return new MessageEmbed().setTitle(`This character doesn't have an artifact in the current build`).setColor('RED')
+    let arti = new MessageEmbed()
+    .setTitle(h.artifactName + ` +${h.artifactLevel}`)
+    .setDescription(`${toStars(art.rarity)}\n*${art.description}*\n\n${art.skilldesc}`)
+    .setThumbnail(art.icon)
+    .setImage(art.image)
+    .setColor(toColor(h.attribute))
+    _setFooter(client, arti)
+    return arti
+}   
+
+const equipEmbed = (h) => {
+    const helm = new MessageEmbed()    
+    getHeroUpper(helm, h, `Helmet`)
+}
+
+
+const filter = (reaction, user) => true
+
+
+const hero = async (args, message) => {
+    let h = hFilter(args.join(' '))
+    checkLength(h.length, message)
+    h = h[0]
+    let _g = generalEmbed(h)
+    _g = {embed: _g, id: `general`}
+    let _a = artiEmbed(h)
+    _a = {embed: _a, id: `arti`}
+    let embeds = [_g, _a]
+    let msg = await message.channel.send(embeds[0])
+    for(const [key, value] of Object.entries(_e)){
+        await msg.react(value)
+    }
+    let collector = await msg.createReactionCollector(filter, {time: 60000})
+    collector.on(`collect`, r => {
+        console.log(r)
+    })
+}
+
+
+client.on('ready', () => {
+    console.log('Enhanced mage Kawerik ready')   
+})
+client.on('message', (message) => {
+    if(message.author.bot || !message.content.startsWith(p)) return
+    
+    let args = message.content.split(' ')
+    
+    let cmd = args[0].toLowerCase()
+    
+    args = args.filter(getCmdFromArgs)
+    
+    if(cmd == `!search`){
+        hero(args, message)
+    }
+})
+
+
+client.login(t)
