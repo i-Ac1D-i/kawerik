@@ -1,12 +1,29 @@
-const checkLength = (arr, max, min = 1) => {
-    return arr.length > min && arr.length < max
+const checkLength = (arr, max, minExclusive = 0) => {
+    return arr.length > minExclusive && arr.length < max
 }
 
-const removeCmd = (args) => {
+const removeFirstElement = (args) => {
     return args.filter((v, i, a) => i != 0)
+}
+
+const Filter = (arr, property, query) => {
+    return arr.filter(_ =>_[property].toLowerCase().includes(query))
+    
+}
+
+const FindProperty = (obj, query) => {
+    let p;
+    for(const [key, value] of Object.entries(obj)){
+        if(key == query){
+            p = key
+            break;
+        }
+    }
 }
 
 module.exports = {
     checkLength,
-    removeCmd
+    removeFirstElement, 
+    Filter,
+    FindProperty
 }

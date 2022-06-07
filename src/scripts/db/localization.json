@@ -1,0 +1,13 @@
+{
+    "en-US" : {
+        "search" : {
+            "NO_QUERY" : "No query specified to search for!",
+            "NO_CHARACTER" : "No character found with that name! Check if you correctly typed the name or perhaps a build hasn't been added for this character yet!"
+        },
+        "embeds" : {
+            "error" : {
+                "TITLE" : "Uh Oh..."
+            }
+        }
+    }
+}
