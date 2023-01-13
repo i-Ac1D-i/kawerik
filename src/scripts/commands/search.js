@@ -1,12 +1,12 @@
 const {Command} = require('../utils/Command')
 const {heroes} = require('../db/builds.json')
-const {artifacts} = require('../db/artifacts.json')
 const {Filter, checkLength} = require('../utils/Arrays')
 const {DiscordError} = require('../embeds/error')
-const {GeneralEmbed} = require('../embeds/charsheet')
+const PaginationHandler = require('../Handlers/PaginationHandler')
 const localization = require('../db/localization.json')
 const property = 'name'
-const func = (message, args, client) => {
+
+const func = async (message, args, client) => {
     
     let flag1 = checkLength(args, 16, 0)
 
@@ -20,8 +20,11 @@ const func = (message, args, client) => {
 
     char = char[0]
     
-    message.channel.send(new GeneralEmbed(char).Embed())
+    let msg = await message.channel.send('Fetching Info...')
 
+    let pagination = await PaginationHandler(char, msg)
+    
+    
 }
 
 let p = {}

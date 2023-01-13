@@ -11,6 +11,6 @@
   "license": "ISC",
   "dependencies": {
     "discord-pages": "^1.0.2",
-    "discord.js": "^12.5.3"
+    "discord.js": "^13.8.0"
   }
 }

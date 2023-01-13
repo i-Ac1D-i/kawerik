@@ -26,6 +26,11 @@ const menu = {
     arti: emojis.arti
 }
 
+const pagination = {
+    _artifact: emojis.arti,
+    _charsheet: emojis.gsheet
+}
+
 module.exports = {
-    menu, roles
+    menu, roles, pagination
 }

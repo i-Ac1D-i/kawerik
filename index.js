@@ -1,9 +1,10 @@
-const {Client} = require('discord.js')
+const {Client, Intents} = require('discord.js')
 const {SetCommands} = require('./src/scripts/cmdSet')
 const {SetEvents} = require('./src/scripts/eventSet')
 const {token} = require('./config.json')
-const _Client = new Client()
-
+const _Client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]})
+const p = require('./src/scripts/Handlers/PaginationHandler.js')
+p()
 _Client.login(token)
 SetCommands()
 SetEvents(_Client)

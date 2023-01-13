@@ -9,10 +9,10 @@ module.exports = (client, message) => {
     args = removeFirstElement(args)
     
     let flag1 = !message.author.bot
-    let flag2 = cmd.startsWith(prefix)
+    let flag2 = cmd.startsWith(prefix) || message.match(mentionRegex)
     if(!flag1 || !flag2) return
-    cmd = cmd.slice(prefix.length)
-    cmd = Get(cmd)
+    cmd = Get(cmd.slice(prefix.length))
+    
     if(!cmd) return
 
     try{
